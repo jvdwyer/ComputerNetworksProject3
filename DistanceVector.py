@@ -88,3 +88,4 @@ class DistanceVector(Node):
              myLogString = myLogString + x + str(self.vector[x]) + "," #no space
 
         myLogString = myLogString.rstrip(",")
+        add_entry(current, myLogString)
