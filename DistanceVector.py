@@ -80,4 +80,11 @@ class DistanceVector(Node):
         
         # TODO: Use the provided helper function add_entry() to accomplish this task (see helpers.py).
         # An example call that which prints the format example text above (hardcoded) is provided.        
-        add_entry("A", "A0,B1,C2")        
+        #add_entry("A", "A0,B1,C2") 
+        myLogString = ""
+        current = self.name
+
+        for x in sorted(self.vector):
+             myLogString = myLogString + x + str(self.vector[x]) + "," #no space
+
+        myLogString = myLogString.rstrip(",")
