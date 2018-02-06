@@ -46,6 +46,10 @@ class DistanceVector(Node):
         # TODO - Each node needs to build a message and send it to each of its neighbors
         # HINT: Take a look at the skeleton methods provided for you in Node.py
 
+        for x in self.links:
+             myMessage = self.vector
+             self.send_msg(myMessage, x)
+
 
     def process_BF(self):
         ''' This is run continuously (repeatedly) during the simulation. DV
