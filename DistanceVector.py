@@ -27,8 +27,12 @@ class DistanceVector(Node):
 
         super(DistanceVector, self).__init__(name, topolink, outgoing_links, incoming_links)
         
-        #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data    
-    
+        #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
+
+         #create dictionary for node     
+         self.vector = {}
+         #give node distance to itself 0
+         self.vector[name] = 0
 
     def send_initial_messages(self):
         ''' This is run once at the beginning of the simulation, after all
