@@ -29,7 +29,7 @@ class DistanceVector(Node):
         
         #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
 
-         #create dictionary for node     
+         #create dictionary for node
          self.vector = {}
          #give node distance to itself 0
          self.vector[name] = 0
