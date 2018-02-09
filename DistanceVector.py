@@ -68,7 +68,7 @@ class DistanceVector(Node):
                   if self.vector[x] > myDist:
                        self.vector[x] = myDist
                        wasUpdated = True
-                  elif x not in self.vector.keys()
+                  elif x not in self.vector.keys():
                        self.vector[x] = myDist
                        wasUpdated = True
 
