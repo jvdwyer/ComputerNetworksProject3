@@ -57,7 +57,9 @@ class DistanceVector(Node):
         messages that need to be sent to other nodes as a result are sent. '''
 
         # Implement the Bellman-Ford algorithm here.  It must accomplish two tasks below:
-        # TODO 1. Process queued messages       
+        # TODO 1. Process queued messages
+
+       
         for msg in self.messages:            
             pass
         
@@ -65,7 +67,8 @@ class DistanceVector(Node):
         self.messages = []
 
         # TODO 2. Send neighbors updated distances               
-
+             for x in self.links:
+                  self.send_msg(self.vector, x)
 
     def log_distances(self):
         ''' This function is called immedately after process_BF each round.  It 
