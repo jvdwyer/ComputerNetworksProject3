@@ -46,6 +46,7 @@ class DistanceVector(Node):
         # TODO - Each node needs to build a message and send it to each of its neighbors
         # HINT: Take a look at the skeleton methods provided for you in Node.py
 
+
         for x in self.links:
              myMessage = self.vector
              self.send_msg(myMessage, x)
@@ -59,14 +60,30 @@ class DistanceVector(Node):
         # Implement the Bellman-Ford algorithm here.  It must accomplish two tasks below:
         # TODO 1. Process queued messages
 
-       
-        for msg in self.messages:            
-            pass
+
+        wasUpdated = False
+        for msg in self.messages:
+             for x in msg.keys():
+                  myDist = msg[x] + 1
+                  if self.vector[x] > myDist:
+                       self.vector[x] = myDist
+                       wasUpdated = True
+                  elif x not in self.vector.keys()
+                       self.vector[x] = myDist
+                       wasUpdated = True
+
+
+
         
-        # Empty queue
+        # Empty queue -> this came in the skeleton
         self.messages = []
 
-        # TODO 2. Send neighbors updated distances               
+
+
+        # TODO 2. Send neighbors updated distances
+
+
+        if wasUpdated == True:               
              for x in self.links:
                   self.send_msg(self.vector, x)
 
