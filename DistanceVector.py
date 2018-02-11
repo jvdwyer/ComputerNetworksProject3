@@ -67,17 +67,9 @@ class DistanceVector(Node):
         wasUpdated = False
         for msg in self.messages: #this came with the skeleton
              for x in msg["DistanceVector"].keys():
-                  if x != self.name and x not in self.vector: #ignore self, check if node is in vector, add to vector
-                       for y in self.outgoing_links:
-                            if x != y.name:
-                                 xWeight = int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) + int(msg["DistanceVector"][x])
-                            else:
-                                 xWeight = int(self.get_outgoing_neighbor_weight(x))
-                       self.vector[x] = xWeight
-                       wasUpdated = True
-                  elif x != self.name and x in self.vector: #update costs for nodes/ASes already in vecotr
+                  if x != self.name and x in self.vector: #update costs for nodes/ASes already in vector
                        myCost = int(msg["DistanceVector"][x]) + int(self.get_outgoing_neighbor_weight(msg["OriginNode"]))
-                       if self.vector[x] != -99 and int(msg["DistanceVector"][x]) <= -99 or int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) <= -99: #stop iterating if cost makes it to 99
+                       if self.vector[x] != -99 and int(msg["DistanceVector"][x]) <= -99 or int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) <= -99: #stop iterating if cost makes it to -99
                            self.vector[x] = -99
                            wasUpdated = True
                        else:
@@ -87,6 +79,14 @@ class DistanceVector(Node):
                             elif self.vector[x] != -99 and myCost <= -99:
                                  self.vector[x] = -99
                                  wasUpdated = True
+                  elif x != self.name and x not in self.vector: #ignore self, check if node is in vector, add to vector
+                       for y in self.outgoing_links:
+                            if x != y.name:
+                                 xWeight = int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) + int(msg["DistanceVector"][x])
+                            else:
+                                 xWeight = int(self.get_outgoing_neighbor_weight(x))
+                       self.vector[x] = xWeight
+                       wasUpdated = True
         #print('Vector:')
         #print(self.vector)
 
