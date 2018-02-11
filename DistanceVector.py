@@ -28,11 +28,11 @@ class DistanceVector(Node):
         super(DistanceVector, self).__init__(name, topolink, outgoing_links, incoming_links)
         
         #TODO: Create any necessary data structure(s) to contain the Node's internal state / distance vector data
-
-        #create dictionary for node
-        self.vector = {}
-        #give node distance to itself 0
-        self.vector[name] = 0
+        
+        
+        #only knows about itself and cost to itself
+        self.vector = {name: 0}
+        
 
     def send_initial_messages(self):
         ''' This is run once at the beginning of the simulation, after all
@@ -47,9 +47,12 @@ class DistanceVector(Node):
         # HINT: Take a look at the skeleton methods provided for you in Node.py
 
 
-        for x in self.links:
-             myMessage = self.vector
-             self.send_msg(myMessage, x)
+        #send messages to incoming/upstream links only
+        for x in self.incoming_links:
+             myMessage = {"OriginNode": self.name, "DistanceVector": self.vector, "destination": x.name}
+             #print('initial message:')
+             #print(myMessage)
+             self.send_msg(myMessage, x.name)
 
 
     def process_BF(self):
@@ -62,17 +65,30 @@ class DistanceVector(Node):
 
 
         wasUpdated = False
-        for msg in self.messages:
-             for x in msg.keys():
-                  myDist = msg[x] + 1
-                  if self.vector[x] > myDist:
-                       self.vector[x] = myDist
+        for msg in self.messages: #this came with the skeleton
+             for x in msg["DistanceVector"].keys():
+                  if x != self.name and x not in self.vector: #ignore self, check if node is in vector, add to vector
+                       for y in self.outgoing_links:
+                            if x != y.name:
+                                 xWeight = int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) + int(msg["DistanceVector"][x])
+                            else:
+                                 xWeight = int(self.get_outgoing_neighbor_weight(x))
+                       self.vector[x] = xWeight
                        wasUpdated = True
-                  elif x not in self.vector.keys():
-                       self.vector[x] = myDist
-                       wasUpdated = True
-
-
+                  elif x != self.name and x in self.vector: #update costs for nodes/ASes already in vecotr
+                       myCost = int(msg["DistanceVector"][x]) + int(self.get_outgoing_neighbor_weight(msg["OriginNode"]))
+                       if self.vector[x] != -99 and int(msg["DistanceVector"][x]) <= -99 or int(self.get_outgoing_neighbor_weight(msg["OriginNode"])) <= -99: #stop iterating if cost makes it to 99
+                           self.vector[x] = -99
+                           wasUpdated = True
+                       else:
+                            if myCost < self.vector[x]  and myCost > -99:
+                                 self.vector[x] = myCost
+                                 wasUpdated = True
+                            elif self.vector[x] != -99 and myCost <= -99:
+                                 self.vector[x] = -99
+                                 wasUpdated = True
+        #print('Vector:')
+        #print(self.vector)
 
         
         # Empty queue -> this came in the skeleton
@@ -84,8 +100,12 @@ class DistanceVector(Node):
 
 
         if wasUpdated == True:               
-             for x in self.links:
-                  self.send_msg(self.vector, x)
+             for x in self.incoming_links: #send to incoming/upstream links only
+                  copyVector = self.vector.copy()
+                  myMessage = {"OriginNode": self.name, "DistanceVector": copyVector, "destination": x.name}
+                  #print('updated message:')
+                  #print(myMessage)
+                  self.send_msg(myMessage, x.name)
 
     def log_distances(self):
         ''' This function is called immedately after process_BF each round.  It 
@@ -101,11 +121,10 @@ class DistanceVector(Node):
         # TODO: Use the provided helper function add_entry() to accomplish this task (see helpers.py).
         # An example call that which prints the format example text above (hardcoded) is provided.        
         #add_entry("A", "A0,B1,C2") 
-        myLogString = ""
-        current = self.name
-
+        
+        logString = ''
         for x in sorted(self.vector):
-             myLogString = myLogString + x + str(self.vector[x]) + "," #no space
-
-        myLogString = myLogString.rstrip(",")
-        add_entry(current, myLogString)
+             logString = logString + x + str(self.vector[x]) + ','
+             #print(logString)
+        logString = logString.rstrip(',') #drop last comma
+        add_entry(self.name, logString)
